@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+        <title>Chem - {[title}}</title>
+    {% else %}
+        <title>Chem</title>
+    {% endif %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+    body{
+        background: rgb(100,161,221);
+        background: linear-gradient(90deg, rgba(100,161,221,0.8547794117647058) 0%, rgba(163,228,215,1) 50%);
+        }
+    .container{
+        width:60%;
+        margin: auto;
+        margin-top: 4em;
+        }
+    .content{
+        background: #F2F3F4 ;
+        font-family: Verdana;
+        text-align: center;
+        line-height: 1.5 em;
+        padding: 10px;
+        margin: 10px 0px;
+        border-radius: 10px;
+        padding-top: 1.5em;
+        padding-bottom: 3em;
+        }
+    .content h2{
+        color: #34495E;
+        font-family: Verdana;
+        font-size: 34px;
+        text-transform: uppercase;
+    }
+    *{
+        box-sizing: border-box;
+    }
+    header li, header a{
+        font-family: Verdana;
+        font-size: 20px;
+        color: #34495E;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    header{
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 17.5%;
+        margin-top: 0px;
+        margin-left: -35px;
+        margin-right: 0px;
+    }
+    .nav_links{
+        list-style: none;
+    }
+    .nav_links li{
+        display: inline-block;
+        padding: 0px 16px;
+    }
+    .nav_links li a{
+        transition: all 0.3s ease 0s;
+    }
+    .nav_links li a:hover{
+        color: blue;
+    }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul class="nav_links">
+            <li><a class="left" href="{% url 'home' %}">Home</a></li>
+            <li><a class="left" href="{% url 'calculator' %}">Calculator</a></li>
+            <li><a class="left" href="{% url 'practice' %}">Practice</a></li>
+            <li><a class="left" href="{% url 'view-class' %}">Classes</a></li>
+        </ul>
+    </nav>
+    <nav>
+        <ul class="nav_links">
+            {% if user.is_authenticated %}
+            <li><a class="right" href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a class="right" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Log In</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+    <div class="container">
+        <div class="content">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

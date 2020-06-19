@@ -1,0 +1,12 @@
+<title>Leave Class</title>
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <p>Are you sure you want to leave {{class}}?</p>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="submit" value="Leave Class">
+        <a href="{% url 'dashboard' %}">Cancel</a>
+    </form>
+{% endblock %}

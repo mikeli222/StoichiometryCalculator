@@ -1,0 +1,41 @@
+<title>Classes</title>
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+    {% for message in messages %}
+      <div class="alert {{ message.tags }} alert-dismissible mt-3" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+      </div>
+    {% endfor %}
+    <h2> Available classes </h2>
+
+    {% for classes in classes %}
+    {% if forloop.first %}<div class="row">{% endif %}
+    <div class="col-md-4 w-100 p-3">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">{{classes.name}}</h4>
+            <p class="card-text">Taught by {{classes.teacher}}</p>
+            {% if c_user.is_student %}
+            <a href="{% url 'signup' classes.id %}" class="btn btn-primary">Sign Up</a>
+            {% endif %}
+            {% if c_user.is_teacher %}
+            <a href="{% url 'signup' classes.id %}" class="btn btn-primary">See more</a>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+    {% if forloop.last %}</div>{% endif %}
+    {% endfor %}
+    {% if c_user.is_teacher %}
+        <hr>
+    <div>
+        <a href="{% url 'add-class' %}" class="btn btn-warning">Add class to teach</a>
+    </div>
+    {% endif %}
+{% endblock %}

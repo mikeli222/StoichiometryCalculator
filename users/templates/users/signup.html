@@ -1,0 +1,19 @@
+<title>Class Signup</title>
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <h2> {{class}} </h2>
+    <p>Class name: {{class.name}}</p>
+    <p>Description: {{class.description}}</p>
+    <p>Cost: ${{class.cost}}</p>
+    {% if user.is_student %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input class="btn btn-primary" type="submit" value="Join">
+    </form>
+    {% endif %}
+     <div>
+        <a class="btn btn-secondary" href="{% url 'view-class' %}">Go back to classes</a>
+    </div>
+{% endblock %}

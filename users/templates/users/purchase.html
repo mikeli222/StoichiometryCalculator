@@ -1,0 +1,14 @@
+{% extends 'users/base.html' %}
+{% block content %}
+    <h2 class="mb-4"> Purchase Tutoring Time </h2>
+    <div class="col-md-6 mx-auto">
+        <form class=action="" method="POST">
+        {%csrf_token%}
+            <p class="text-left">Current balance: {{c_user.student.balance}} hours</p>
+            <div class="form-group text-left">
+                How many hours do you want to purchase? <input class="form-control" type="text" name="time">
+            </div>
+            <button type="submit" name="login" class="btn btn-primary">Purchase</button>
+        </form>
+    </div>
+{% endblock %}

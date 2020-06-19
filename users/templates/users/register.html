@@ -1,0 +1,24 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <div class="col-md-6 mx-auto">
+        <h2> Register </h2>
+        <form class="form-group" method="POST">
+            {%csrf_token%}
+            <div class="form-group text-left">
+                {{ form.username.label }}:
+                {{ form.username }}
+            </div>
+            <div class="form-group text-left">{{ form.email.label }}:
+            {{ form.email }}</div>
+            <div class="form-group text-left">{{ form.password1.label }}:
+            {{ form.password1 }}</div>
+            <div class="form-group text-left">{{ form.password2.label }}:
+            {{ form.password2 }}</div>
+            <div class="form-group text-left">Register as a
+            {{ form.status }}</div>
+            <button type="submit" name="Create User" class="btn btn-primary">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+    </div>
+{% endblock %}

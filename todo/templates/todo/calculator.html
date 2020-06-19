@@ -1,0 +1,231 @@
+<title>Stoichiometry Calculator</title>
+<style type="text/css">
+        .container{
+            color: #34495E;
+            font-size: 16px;
+        }
+        .inside{
+            font-size: 16px;
+            text-align: left;
+            margin-left: 20%;
+            font-weight: normal;
+        }
+        .results{
+            padding-top: 20px;
+        }
+
+        .result-line{
+            background: #F7DC6F;
+            padding-top: 3px;
+        }
+        .a {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        .b {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .button{
+            margin-top: 15px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+        .input{
+            height: 25px;
+            font-size: 12px;
+        }
+        .frac{
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            letter-spacing: 0.001em;
+            text-align: center;
+        }
+        .frac > span {
+            display: block;
+            padding: 0.1em;
+        }
+        .frac span.bottom {
+            border-top: thin solid black;
+        }
+        .frac span.symbol {
+            display: none;
+        }
+    </style>
+
+{% extends 'todo/base.html' %}
+{% block content %}
+    <h2 class="text-center mb-4">Stoichiometry Calculator</h2>
+    <div class="col-md-10 mx-auto">
+        <form method = POST action="">
+            {% csrf_token %}
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label col-form-label-lg">Reaction:</label>
+            <div class="col-sm-8">
+              {{ form.reaction }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label col-form-label-lg">Convert</label>
+            <div class="col-sm-3">
+              {{ form.given_amount }}
+            </div>
+            <div class="col-sm-2">
+              {{ form.given_units }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.given_formula }} {{form.given_formula.errors}}
+            </div>
+            <div class="col-sm-1">
+                <div class="form-check">
+                {{form.limiting}}
+              <label class="form-check-label">
+                Two reactants
+            </label>
+        </div>
+            </div>
+          </div>
+
+        <div id="limiting-reactant" style="display: none" class="form-group row">
+            <label class="col-sm-3 col-form-label col-form-label-lg"></label>
+            <div class="col-sm-3">
+                {{ form.given_amount2 }}
+            </div>
+            <div class="col-sm-2">
+              {{ form.given_units2 }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.given_formula2 }} {{form.given_formula2.errors}}
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label col-form-label-lg">Into</label>
+            <div class="col-sm-2">
+              {{ form.solving_units }}
+            </div>
+            <div class="col-sm-6">
+              {{ form.solving_formula }} {{form.solving_formula.errors}}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-lg mt-3">Convert</button>
+        </form>
+    </div>
+
+    {% if results %}
+        <hr>
+        <div class="results">
+        <div class="result-line">
+            <p><b>Results: {{ results }} {{solving_units}} {{solving_formula}}</b></p>
+            {% if excess %}
+            <p><b>Limiting reactant: {{given_formula}} </b></p>
+            <p><b>Excess: {{excess}} {{excess_units}} {{excess_reactant}} remaining</b></p>
+            {% endif %}
+        </div>
+        </div>
+    {% if user.is_authenticated %}
+    <p>Step by step solution:</p>
+        {% if given_units == 'grams' and solving_units == 'grams' %}
+        {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>1 mol {{given_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{molmass_given}} grams {{given_formula}}</span></div> x
+        <div class="frac"><span>{{coeff_solving}} mol {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        <div class="frac"><span>{{molmass_solving}} grams {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">1 mol {{solving_formula}}</span></div>  = {{results}} {{solving_units}} {{solving_formula}}
+
+        {% elif given_units == 'moles' and solving_units == 'moles' %}
+        {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>{{coeff_given}} mol {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        = {{results}} {{solving_units}} {{solving_formula}}
+
+        {% elif given_units == 'grams' and solving_units == 'moles' %}
+        {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>1 mol {{given_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{molmass_given}} grams {{given_formula}}</span></div> x
+        <div class="frac"><span>{{coeff_solving}} mol {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        = {{results}} {{solving_units}} {{solving_formula}}
+
+        {% elif given_units == 'moles' and solving_units == 'grams' %}
+        {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>{{coeff_solving}} mol {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        <div class="frac"><span>{{molmass_solving}} grams {{solving_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">1 mol {{solving_formula}}</span></div>  = {{results}} {{solving_units}} {{solving_formula}}
+
+        {% endif %}
+
+        {% if excess and given_units == 'grams' and excess_units == 'grams' %}
+        <p><div>{{excess_amount}} {{excess_units}} {{excess_reactant}} - ( {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>1 mol {{given_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{molmass_given}} grams {{given_formula}}</span></div> x
+        <div class="frac"><span>{{coeff_excess}} mol {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        <div class="frac"><span>{{molmass_excess}} grams {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">1 mol {{excess_reactant}}</span></div>)  = {{excess}} {{excess_units}} {{excess_reactant}}</div></p>
+
+        {% elif excess and given_units == 'grams' and excess_units == 'moles' %}
+        <p><div>{{excess_amount}} {{excess_units}} {{excess_reactant}} - ( {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>1 mol {{given_formula}}</span><span class="symbol">/</span>
+        <span class="bottom">{{molmass_given}} grams {{given_formula}}</span></div> x
+        <div class="frac"><span>{{coeff_excess}} mol {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div>)  = {{excess}} {{excess_units}} {{excess_reactant}}</div></p>
+
+        {% elif excess and given_units == 'moles' and excess_units == 'moles' %}
+        <p><div>{{excess_amount}} {{excess_units}} {{excess_reactant}} - ( {{given_amount}} {{given_units}} {{given_formula}} x
+        <div class="frac"><span>{{coeff_excess}} mol {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div>)  = {{excess}} {{excess_units}} {{excess_reactant}}</div></p>
+
+        {% elif excess and given_units == 'moles' and excess_units == 'grams' %}
+        <p><div>{{excess_amount}} {{excess_units}} {{excess_reactant}} - ( {{given_amount}} {{given_units}} {{given_formula}} x
+<!--        <div class="frac"><span>1 mol {{given_formula}}</span><span class="symbol">/</span>-->
+<!--        <span class="bottom">{{molmass_given}} grams {{given_formula}}</span></div> x-->
+        <div class="frac"><span>{{coeff_excess}} mol {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">{{coeff_given}} mol {{given_formula}}</span></div> x
+        <div class="frac"><span>{{molmass_excess}} grams {{excess_reactant}}</span><span class="symbol">/</span>
+        <span class="bottom">1 mol {{excess_reactant}}</span></div>)  = {{excess}} {{excess_units}} {{excess_reactant}}</div></p>
+
+
+
+
+        {% endif %}
+    {% else %}
+    <p><a href="{% url 'login' %}">Sign in</a> to see step by step solution</p>
+    {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+var checkbox = document.getElementById("limiting-check");
+var limitingLine = document.getElementById("limiting-reactant")
+var given_amount2 = document.getElementById("given_amount2")
+var given_formula2 = document.getElementById("given_formula2")
+if(checkbox.checked){
+    limitingLine.style.display = 'flex'
+}
+checkbox.addEventListener( 'change', function() {
+    console.log(checkbox.checked)
+    if(this.checked) {
+        limitingLine.style.display = 'flex';
+        given_amount2.required = true;
+        given_formula2.required = true;
+    } else {
+        limitingLine.style.display = 'none';
+        given_amount2.required = false;
+        given_formula2.required = false;
+}
+});
+</script>
+{% endblock %}

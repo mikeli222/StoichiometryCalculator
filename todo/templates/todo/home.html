@@ -1,0 +1,35 @@
+{% extends 'todo/base.html' %}
+{% block content %}
+    <h2>TO DO LIST</h2>
+    <div class="col-md-10 mx-auto">
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.title}}
+        <input type="submit" name="add-task">
+    </form>
+    <table class="table mt-5">
+    {% for tasks in tasks %}
+    <tr>
+        <th class="table-success">
+            <div class="row">
+            <div class="col-md-6 mx-auto text-left font-weight-normal">{{tasks}}</div>
+            <div class="col-md-3 mx-auto"><a class="btn btn-primary btn-sm" href="{% url 'update-task' tasks.id %}">Update</a>
+            <a class="btn btn-danger btn-sm" href="{% url 'delete-task' tasks.id %}">Delete</a></div>
+            </div>
+        </th>
+    </tr>
+    {% endfor %}
+    {% for tasks in task_completed %}
+    <tr>
+        <th class="table-dark">
+            <div class="row">
+                <div class="col-md-6 mx-auto text-left font-weight-normal"><strike>{{tasks}}</strike></div>
+            <div class="col-md-3 mx-auto"><a class="btn btn-primary btn-sm" href="{% url 'update-task' tasks.id %}">Update</a>
+            <a class="btn btn-danger btn-sm" href="{% url 'delete-task' tasks.id %}">Delete</a></div>
+            </div>
+        </th>
+    </tr>
+    {% endfor %}
+    </table>
+    </div>
+{% endblock %}
